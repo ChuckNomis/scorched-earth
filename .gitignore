@@ -1,6 +1,6 @@
 # Claude Code local settings
 .claude/
-
+.planning/
 # CMake build directories (CLion default + common names)
 cmake-build-*/
 build/

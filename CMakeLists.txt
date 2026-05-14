@@ -3,32 +3,26 @@ project(bagel26)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(bagel26 main.cpp
-        bagel.h
-        tests.cpp
-        pong.h
-        PongMockup.h
-        Pong.cpp)
+# bagel26: header-only ECS engine
+add_library(bagel26 INTERFACE)
+target_include_directories(bagel26 INTERFACE ${CMAKE_SOURCE_DIR})
 
 set(SDL_STATIC ON)
 set(SDL_SHARED OFF)
 add_subdirectory(lib/SDL)
-target_link_libraries(bagel26 PUBLIC SDL3-static)
 
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(lib/SDL_image)
-target_link_libraries(bagel26 PUBLIC SDL3_image-static)
 
-set(BOX2D_SAMPLES OFF)
-set(BOX2D_BENCHMARKS OFF)
-set(BOX2D_DOCS OFF)
-set(BOX2D_PROFILE OFF)
-set(BOX2D_VALIDATE OFF)
-set(BOX2D_UNIT_TESTS OFF)
-add_subdirectory(lib/box2d)
-target_link_libraries(${PROJECT_NAME} PUBLIC box2d)
+# se: Scorched Earth game
+add_executable(se
+        main.cpp
+        SE/ScorchedEarth.h
+        SE/ScorchedEarth.cpp)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+target_link_libraries(se PRIVATE bagel26 SDL3-static SDL3_image-static)
+
+add_custom_command(TARGET se POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
         "${PROJECT_SOURCE_DIR}/res"
-        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/res")
+        "$<TARGET_FILE_DIR:se>/res")
