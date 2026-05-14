@@ -1,0 +1,21 @@
+PROJECT_NAME    = "Scorched Earth"
+PROJECT_BRIEF   = "Turn-based artillery game built on the bagel26 ECS engine"
+OUTPUT_DIRECTORY = docs
+
+INPUT           = SE/ScorchedEarth.h SE/ScorchedEarth.cpp main.cpp
+RECURSIVE       = NO
+
+EXTRACT_ALL     = YES
+EXTRACT_PRIVATE = YES
+EXTRACT_STATIC  = YES
+
+GENERATE_HTML   = YES
+GENERATE_LATEX  = NO
+HTML_OUTPUT     = html
+
+GENERATE_TREEVIEW = YES
+SOURCE_BROWSER    = YES
+SEARCHENGINE      = YES
+
+WARN_IF_UNDOCUMENTED = NO
+QUIET                = YES

@@ -10,10 +10,35 @@ using namespace bagel;
 namespace se
 {
 
-// Forward declarations for factory functions (defined after class members)
+/// @brief Creates the deformable terrain entity.
+/// @param x Left edge of the terrain grid in world space.
+/// @param y Top edge of the terrain grid in world space.
+/// @return Handle to the new entity (carries @ref se::Position, @ref se::Drawing, @ref se::GridData).
 static bagel::ent_type createTerrain(float x, float y);
+
+/// @brief Creates a tank entity with the appropriate component set.
+/// @param x    Initial centre X position.
+/// @param y    Initial centre Y position.
+/// @param isAI Attach an @ref se::AI component (AI-controlled tank).
+/// @param isPlayer Attach an @ref se::Input tag (player-controlled tank).
+/// @param initAngle Starting barrel angle in degrees (default 45°).
+/// @return Handle to the new entity.
 static bagel::ent_type createTank(float x, float y, bool isAI, bool isPlayer, float initAngle = 45.f);
+
+/// @brief Creates a projectile entity launched from a tank barrel.
+/// @param x  Spawn position X (world space).
+/// @param y  Spawn position Y (world space).
+/// @param vx Initial horizontal velocity (pixels/second).
+/// @param vy Initial vertical velocity (pixels/second, negative = upward).
+/// @return Handle to the new entity (carries @ref se::Position, @ref se::Movement,
+///         @ref se::Drawing, @ref se::Physics, @ref se::Weapon).
 static bagel::ent_type createProjectile(float x, float y, float vx, float vy);
+
+/// @brief Creates a visual explosion entity at the point of impact.
+/// @param x Centre X of the explosion (world space).
+/// @param y Centre Y of the explosion (world space).
+/// @return Handle to the new entity (carries @ref se::Position, @ref se::Drawing,
+///         @ref se::Lifetime, @ref se::AreaDamage). Destroyed by @ref se::ScorchedEarth::lifetime_system.
 static bagel::ent_type createExplosion(float x, float y);
 
 ScorchedEarth::ScorchedEarth()
@@ -581,20 +606,6 @@ void ScorchedEarth::render_system() const
     }
 }
 
-void ScorchedEarth::shop_system()
-{
-    static const Mask mask = MaskBuilder()
-        .set<Input>()
-        .set<Currency>()
-        .set<Inventory>()
-        .build();
-    for (Entity e = Entity::first(); !e.eof(); e.next()) {
-        if (e.test(mask)) {
-            // Phase 1: stub
-        }
-    }
-}
-
 static bagel::ent_type createTank(float x, float y, bool isAI, bool isPlayer, float initAngle)
 {
     Entity tank = Entity::create();
@@ -607,9 +618,7 @@ static bagel::ent_type createTank(float x, float y, bool isAI, bool isPlayer, fl
         Drawing{partSrc, {48.f, 28.f}},
         Health{100.f, 100.f},
         Artillery{initAngle, 300.f},
-        Physics{9.8f, 0.1f},
-        Currency{0},
-        Inventory{0, 3}
+        Physics{9.8f, 0.1f}
     );
     if (isPlayer) tank.add(Input{});
     if (isAI)     tank.add(AI{0, 1});
